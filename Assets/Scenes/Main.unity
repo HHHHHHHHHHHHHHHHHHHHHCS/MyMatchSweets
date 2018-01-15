@@ -260,6 +260,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cedca0d75191e184ea4979788fa35f32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sweetPrefabList:
+  - sweetType: 1
+    prefab: {fileID: 114072981493595622, guid: bc07c42167f5fc14fa39269410d1de37, type: 2}
   gridPrefab: {fileID: 1181929036423474, guid: 78f95431ab31726478c0e2b0d385ef7b, type: 2}
 --- !u!1 &2010343320
 GameObject:
@@ -310,7 +313,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -10
   m_Sprite: {fileID: 21300000, guid: 30362447414c2d24fa2124c2e6582879, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
