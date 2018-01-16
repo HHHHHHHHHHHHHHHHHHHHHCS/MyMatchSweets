@@ -125,7 +125,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &952509195
 Transform:
@@ -156,7 +156,7 @@ GameObject:
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!81 &1653495594
 AudioListener:
@@ -234,7 +234,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1929707379
 Transform:
@@ -260,9 +260,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cedca0d75191e184ea4979788fa35f32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sweetPrefabList:
+  sweetsPrefabList:
   - sweetType: 1
     prefab: {fileID: 114072981493595622, guid: bc07c42167f5fc14fa39269410d1de37, type: 2}
+  sweetsColorList:
+  - sweetColorType: 0
+    sprite: {fileID: 21300000, guid: 5fdf0ab3dfbca2947b07fc8a2f0e04b0, type: 3}
+  - sweetColorType: 1
+    sprite: {fileID: 21300000, guid: 2f5541ddc6d03394c9bb904306064249, type: 3}
+  - sweetColorType: 2
+    sprite: {fileID: 21300000, guid: 6b892a88f400a8c49b93e195ca493ca5, type: 3}
+  - sweetColorType: 3
+    sprite: {fileID: 21300000, guid: 38a0ee623eec0b44380f9015c44268ea, type: 3}
+  - sweetColorType: 4
+    sprite: {fileID: 21300000, guid: 32d521ee0446b5a478739e80dec7dfd9, type: 3}
+  - sweetColorType: 5
+    sprite: {fileID: 21300000, guid: c0521331ff0265648aca5470fa6c1e4e, type: 3}
+  - sweetColorType: 6
+    sprite: {fileID: 21300000, guid: 4c2cf86324edaa041a728bdb5e7fca3d, type: 3}
   gridPrefab: {fileID: 1181929036423474, guid: 78f95431ab31726478c0e2b0d385ef7b, type: 2}
 --- !u!1 &2010343320
 GameObject:
@@ -278,7 +293,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!212 &2010343321
 SpriteRenderer:

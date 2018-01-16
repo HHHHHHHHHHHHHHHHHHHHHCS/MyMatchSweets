@@ -11,15 +11,18 @@ public class MainGameManager : MonoBehaviour
     private const int xColumn = 10, yColumn = 10;
 
     [SerializeField]
-    private List<SweetStruct> sweetPrefabList;
-
-
-
+    private List<SweetsPrefabStruct> sweetsPrefabList;
+    [SerializeField]
+    private List<SweetsColorStruct> sweetsColorList;
     [SerializeField]
     private GameObject gridPrefab;
 
+    public Dictionary<SweetsType, SweetsPrefabStruct> SweetsPrefabDic { get { return sweetsPrefabDic; } }
+    public Dictionary<SweetsColorType, SweetsColorStruct> SweetsColorDic { get { return sweetsColorDic; } }
+
     private Transform itemRoot;
-    private Dictionary<SweetsType, SweetStruct> sweetPrefabDic;
+    private Dictionary<SweetsType, SweetsPrefabStruct> sweetsPrefabDic;
+    private Dictionary<SweetsColorType, SweetsColorStruct> sweetsColorDic;
     private SweetInfo[,] sweets;
 
 
@@ -33,7 +36,7 @@ public class MainGameManager : MonoBehaviour
         Instance = this;
         InitRoot();
         InitSpawnGrid();
-        InitSweetPrefab();
+        InitSweetsDic();
         InitSweetsArray();
     }
 
@@ -48,24 +51,36 @@ public class MainGameManager : MonoBehaviour
         {
             for (int j = 0; j < yColumn; j++)
             {
-                GameObject chocolate = Instantiate(gridPrefab, CorrectPosition(i,j)
+                GameObject chocolate = Instantiate(gridPrefab, CorrectPosition(i, j)
                     , Quaternion.identity, itemRoot);
+                chocolate.isStatic = true;
             }
         }
     }
 
-    private void InitSweetPrefab()
+    private void InitSweetsDic()
     {
-        sweetPrefabDic = new Dictionary<SweetsType, SweetStruct>();
-        foreach(var item in sweetPrefabList)
+        sweetsPrefabDic = new Dictionary<SweetsType, SweetsPrefabStruct>();
+        foreach (var item in sweetsPrefabList)
         {
-            if(!sweetPrefabDic.ContainsKey(item.sweetType))
+            if (!sweetsPrefabDic.ContainsKey(item.sweetType))
             {
-                sweetPrefabDic.Add(item.sweetType, item);
+                sweetsPrefabDic.Add(item.sweetType, item);
             }
         }
-        sweetPrefabList.Clear();
-        sweetPrefabList = null;
+        sweetsPrefabList.Clear();
+        sweetsPrefabList = null;
+
+        sweetsColorDic = new Dictionary<SweetsColorType, SweetsColorStruct>();
+        foreach (var item in sweetsColorList)
+        {
+            if (!sweetsColorDic.ContainsKey(item.sweetColorType))
+            {
+                sweetsColorDic.Add(item.sweetColorType, item);
+            }
+        }
+        sweetsColorList.Clear();
+        sweetsColorList = null;
     }
 
     private void InitSweetsArray()
@@ -75,11 +90,9 @@ public class MainGameManager : MonoBehaviour
         {
             for (int j = 0; j < yColumn; j++)
             {
-                var item = Instantiate(sweetPrefabDic[SweetsType.Normal].prefab
+                sweets[i, j] = Instantiate(sweetsPrefabDic[SweetsType.Normal].prefab
                     , CorrectPosition(i, j), Quaternion.identity, itemRoot)
-                    .Init(SweetsType.Normal,i,j);
-                item.transform.SetParent(itemRoot);
-                sweets[i, j] = item;
+                    .Init(SweetsType.Normal, i, j, itemRoot);
             }
         }
     }

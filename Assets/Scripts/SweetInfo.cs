@@ -12,39 +12,57 @@ public enum SweetsType
 }
 
 [System.Serializable]
-public struct SweetStruct
+public struct SweetsPrefabStruct
 {
     public SweetsType sweetType;
     public SweetInfo prefab;
 }
+
 
 public class SweetInfo : MonoBehaviour
 {
     public SweetsType sweetsType { get; private set; }
     public int x { get; private set; }
     public int y { get; private set; }
-    public MoveSweet moveSweet { get; private set; }
+    public MoveSweet MoveComponent { get; private set; }
+    public SweetColor ColorComponent { get; private set; }
 
-    public SweetInfo Init(SweetsType _sweetsType, int _x, int _y)
+    public SweetInfo Init(SweetsType _sweetsType, int _x, int _y, Transform itemRoot)
     {
-        moveSweet = GetComponent<MoveSweet>();
+        MoveComponent = GetComponent<MoveSweet>();
+        ColorComponent = GetComponent<SweetColor>();
         sweetsType = _sweetsType;
-        x = _x;
-        y = _y;
+        transform.SetParent(itemRoot);
+        Move(_x, _y);
+        SetColor();
         return this;
     }
 
     public bool CanMove()
     {
-        return moveSweet;
+        return MoveComponent;
+    }
+
+    public bool CanChangeColor()
+    {
+        return ColorComponent;
     }
 
     public void Move(int _x, int _y)
     {
-        if(CanMove())
+        if (CanMove())
         {
             x = _x;
             y = _y;
+            MoveComponent.Move(x, y);
+        }
+    }
+
+    public void SetColor()
+    {
+        if (CanChangeColor())
+        {
+            ColorComponent.SetColor();
         }
     }
 }

@@ -13,7 +13,6 @@ public class MoveSweet : MonoBehaviour
 
     public void Move(int newX, int newY)
     {
-        sweetInfo.Move(newX, newY);
         transform.position = MainGameManager.Instance.CorrectPosition(newX, newY);
     }
 }
