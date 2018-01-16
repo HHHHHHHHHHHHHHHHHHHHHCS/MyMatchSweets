@@ -90,15 +90,67 @@ public class MainGameManager : MonoBehaviour
         {
             for (int j = 0; j < yColumn; j++)
             {
-                sweets[i, j] = Instantiate(sweetsPrefabDic[SweetsType.Normal].prefab
-                    , CorrectPosition(i, j), Quaternion.identity, itemRoot)
-                    .Init(SweetsType.Normal, i, j, itemRoot);
+                sweets[i, j] = CreateNewSweet(SweetsType.Empty, i, j, itemRoot);
             }
         }
+
+        StartCoroutine(AllFill());
+    }
+
+    public SweetInfo CreateNewSweet(SweetsType _sweetsType, int _x, int _y, Transform itemRoot)
+    {
+        return Instantiate(sweetsPrefabDic[_sweetsType].prefab
+                    , Vector2.zero, Quaternion.identity, itemRoot)
+                    .Init(_sweetsType, _x, _y, itemRoot);
     }
 
     public Vector2 CorrectPosition(int newX, int newY)
     {
         return startPos + new Vector2(newX, -newY);
+    }
+
+    /// <summary>
+    /// 全部填充的方法
+    /// </summary>
+    public IEnumerator AllFill()
+    {
+        while (Fill())
+        {
+            yield return new WaitForSeconds(0.5f);
+        }
+    }
+
+
+    /// <summary>
+    /// 部分填充的办法
+    /// </summary>
+    public bool Fill()
+    {
+        bool filledNotFinished = false;//判断本次填充是否完成
+
+        for (int y = 0; y < yColumn - 1; y++)
+        {
+            for (int x = 0; x < xColumn; x++)
+            {
+                var sweet = sweets[x, y];//得到当前元素位置
+
+                if (sweet.CanMove())//如果该物体无法移动，则无法往下填充
+                {
+                    var sweetBelow = sweets[x, y + 1];
+                    if (sweetBelow.sweetsType == SweetsType.Empty)
+                    {
+                        Destroy(sweetBelow.gameObject);
+                        sweet.Move(x, y + 1);
+                        sweets[x, y + 1] = sweet;
+                        sweets[x, y] = CreateNewSweet(SweetsType.Empty, x, y, itemRoot);
+                        filledNotFinished = true;
+                    }
+                }
+            }
+        }
+
+
+
+        return filledNotFinished;
     }
 }

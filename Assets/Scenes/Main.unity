@@ -261,6 +261,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sweetsPrefabList:
+  - sweetType: 0
+    prefab: {fileID: 114072981493595622, guid: 2f35d13c02164ef4e9fc976a92598282, type: 2}
   - sweetType: 1
     prefab: {fileID: 114072981493595622, guid: bc07c42167f5fc14fa39269410d1de37, type: 2}
   sweetsColorList:

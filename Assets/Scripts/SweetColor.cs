@@ -22,14 +22,19 @@ public struct SweetsColorStruct
 
 public class SweetColor : MonoBehaviour
 {
-
     private static int maxIndex = -1;
+
+    public SweetsColorType sweetColorType { get; private set; }
     private SpriteRenderer sweetSprite;
-    private SweetsColorType sweetColorType;
 
     private void Awake()
     {
         sweetSprite = transform.Find("Sweet").GetComponent<SpriteRenderer>();
+    }
+
+    public void ClearColor()
+    {
+        sweetSprite.sprite = null;
     }
 
     public void SetColor()

@@ -34,7 +34,28 @@ public class SweetInfo : MonoBehaviour
         sweetsType = _sweetsType;
         transform.SetParent(itemRoot);
         Move(_x, _y);
-        SetColor();
+        if (_sweetsType == SweetsType.Empty)
+        {
+            ClearColor();
+        }
+        else
+        {
+            SetColor();
+        }
+        return this;
+    }
+
+    public SweetInfo ReInit(SweetsType _sweetsType)
+    {
+        sweetsType = _sweetsType;
+        if (_sweetsType == SweetsType.Empty)
+        {
+            ClearColor();
+        }
+        else
+        {
+            SetColor();
+        }
         return this;
     }
 
@@ -58,11 +79,24 @@ public class SweetInfo : MonoBehaviour
         }
     }
 
+    public void ClearColor()
+    {
+        ColorComponent.ClearColor();
+    }
+
     public void SetColor()
     {
         if (CanChangeColor())
         {
             ColorComponent.SetColor();
+        }
+    }
+
+    public void SetColor(SweetsColorType colorType)
+    {
+        if (CanChangeColor())
+        {
+            ColorComponent.SetColor(colorType);
         }
     }
 }
