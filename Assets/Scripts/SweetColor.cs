@@ -24,7 +24,7 @@ public class SweetColor : MonoBehaviour
 {
     private static int maxIndex = -1;
 
-    public SweetsColorType sweetColorType { get; private set; }
+    public SweetInfo sweetInfo { get; private set; }
     private SpriteRenderer sweetSprite;
 
     private void Awake()
