@@ -29,7 +29,6 @@ public class SweetColor : MonoBehaviour
 
     private void Awake()
     {
-
         sweetSprite = transform.Find("Sweet").GetComponent<SpriteRenderer>();
     }
 

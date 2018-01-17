@@ -94,14 +94,30 @@ public class MainGameManager : MonoBehaviour
                 sweets[i, j] = CreateNewSweet(SweetsType.Empty, itemRoot, i, j);
             }
         }
-
+        Destroy(sweets[4, 4].gameObject);
+        sweets[4, 4] = CreateNewSweet(SweetsType.Barrier, itemRoot, 4, 4, SweetsSpawnPos.Current);
         StartCoroutine(AllFill());
     }
 
-    public SweetInfo CreateNewSweet(SweetsType _sweetsType, Transform itemRoot, int _x, int _y, bool needUpPos = false)
+    public SweetInfo CreateNewSweet(SweetsType _sweetsType, Transform itemRoot, int _x, int _y, SweetsSpawnPos posEnum = SweetsSpawnPos.Zero)
     {
+        Vector2 spawnPos = Vector2.zero; ;
+        switch (posEnum)
+        {
+            case SweetsSpawnPos.Zero:
+                spawnPos = Vector2.zero;
+                break;
+            case SweetsSpawnPos.Up:
+                spawnPos = CorrectPosition(_x, _y - 1);
+                break;
+            case SweetsSpawnPos.Current:
+                spawnPos = CorrectPosition(_x, _y);
+                break;
+            default:
+                break;
+        }
         return Instantiate(sweetsPrefabDic[_sweetsType].prefab
-                    , needUpPos ? CorrectPosition(_x, _y - 1) : Vector2.zero, Quaternion.identity, itemRoot)
+                    , spawnPos, Quaternion.identity, itemRoot)
                     .Init(_sweetsType, itemRoot, _x, _y, fillTime);
     }
 
@@ -158,7 +174,7 @@ public class MainGameManager : MonoBehaviour
             if (sweet.SweetType == SweetsType.Empty)
             {
                 Destroy(sweet.gameObject);
-                sweets[x, 0] = CreateNewSweet(SweetsType.Normal, itemRoot, x, 0,true);
+                sweets[x, 0] = CreateNewSweet(SweetsType.Normal, itemRoot, x, 0, SweetsSpawnPos.Up);
                 filledNotFinished = true;
             }
         }

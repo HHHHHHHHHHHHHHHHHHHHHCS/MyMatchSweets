@@ -1,5 +1,12 @@
 ﻿using UnityEngine;
 
+public enum SweetsSpawnPos
+{
+    Zero,
+    Up,
+    Current
+}   
+
 public enum SweetsType
 {
     Empty,
@@ -49,26 +56,15 @@ public class SweetInfo : MonoBehaviour
         if (_sweetsType != SweetsType.Empty)
         {
             Move(_x, _y, _time);
-            SetColor();
+            if(_sweetsType==SweetsType.Normal)
+            {
+                SetColor();
+            }
         }
         else
         {
             X = _x;
             Y = _y;
-        }
-        return this;
-    }
-
-    public SweetInfo ReInit(SweetsType _sweetsType)
-    {
-        SweetType = _sweetsType;
-        if (_sweetsType == SweetsType.Empty)
-        {
-            ClearColor();
-        }
-        else
-        {
-            SetColor();
         }
         return this;
     }

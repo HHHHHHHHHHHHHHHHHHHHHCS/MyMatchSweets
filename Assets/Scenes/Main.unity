@@ -265,6 +265,8 @@ MonoBehaviour:
     prefab: {fileID: 114072981493595622, guid: 2f35d13c02164ef4e9fc976a92598282, type: 2}
   - sweetType: 1
     prefab: {fileID: 114072981493595622, guid: bc07c42167f5fc14fa39269410d1de37, type: 2}
+  - sweetType: 2
+    prefab: {fileID: 114964776792737852, guid: 16cd990294b6577408d0c9d9983d81fb, type: 2}
   sweetsColorList:
   - sweetColorType: 0
     sprite: {fileID: 21300000, guid: 5fdf0ab3dfbca2947b07fc8a2f0e04b0, type: 3}
