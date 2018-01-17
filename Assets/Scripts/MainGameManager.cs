@@ -128,27 +128,39 @@ public class MainGameManager : MonoBehaviour
     {
         bool filledNotFinished = false;//判断本次填充是否完成
 
-        for (int y = 0; y < yColumn - 1; y++)
+        for (int y = yColumn - 1; y > 0; y--)
         {
             for (int x = 0; x < xColumn; x++)
             {
                 var sweet = sweets[x, y];//得到当前元素位置
 
-                if (sweet.CanMove())//如果该物体无法移动，则无法往下填充
+                if (sweet.sweetsType == SweetsType.Empty)//如果该物体无法移动，则无法往下填充
                 {
-                    var sweetBelow = sweets[x, y + 1];
-                    if (sweetBelow.sweetsType == SweetsType.Empty)
+                    var sweetUp = sweets[x, y - 1];
+                    if (sweetUp.CanMove())
                     {
-                        Destroy(sweetBelow.gameObject);
-                        sweet.Move(x, y + 1);
-                        sweets[x, y + 1] = sweet;
-                        sweets[x, y] = CreateNewSweet(SweetsType.Empty, x, y, itemRoot);
+                        Destroy(sweet.gameObject);
+                        sweetUp.Move(x, y);
+                        sweets[x, y] = sweetUp;
+                        sweets[x, y - 1] = CreateNewSweet(SweetsType.Empty, x, y, itemRoot);
                         filledNotFinished = true;
                     }
                 }
             }
         }
 
+
+        for (int x = 0; x < xColumn; x++)
+        {
+            var sweet = sweets[x, 0];//得到当前元素位置
+
+            if (sweet.sweetsType == SweetsType.Empty)
+            {
+                Destroy(sweet.gameObject);
+                sweets[x, 0] = CreateNewSweet(SweetsType.Normal, x, 0, itemRoot);
+                filledNotFinished = true;
+            }
+        }
 
 
         return filledNotFinished;
