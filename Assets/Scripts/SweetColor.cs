@@ -24,11 +24,12 @@ public class SweetColor : MonoBehaviour
 {
     private static int maxIndex = -1;
 
-    public SweetInfo sweetInfo { get; private set; }
+    public SweetsColorType SweetColorType { get; private set; }
     private SpriteRenderer sweetSprite;
 
     private void Awake()
     {
+
         sweetSprite = transform.Find("Sweet").GetComponent<SpriteRenderer>();
     }
 
@@ -48,7 +49,7 @@ public class SweetColor : MonoBehaviour
 
     public void SetColor(SweetsColorType colorType)
     {
-        sweetColorType = colorType;
-        sweetSprite.sprite = MainGameManager.Instance.SweetsColorDic[sweetColorType].sprite;
+        SweetColorType = colorType;
+        sweetSprite.sprite = MainGameManager.Instance.SweetsColorDic[SweetColorType].sprite;
     }
 }

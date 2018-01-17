@@ -134,7 +134,7 @@ public class MainGameManager : MonoBehaviour
             {
                 var sweet = sweets[x, y];//得到当前元素位置
 
-                if (sweet.sweetsType == SweetsType.Empty)//如果该物体无法移动，则无法往下填充
+                if (sweet.SweetType == SweetsType.Empty)//如果该物体无法移动，则无法往下填充
                 {
                     var sweetUp = sweets[x, y - 1];
                     if (sweetUp.CanMove())
@@ -154,7 +154,7 @@ public class MainGameManager : MonoBehaviour
         {
             var sweet = sweets[x, 0];//得到当前元素位置
 
-            if (sweet.sweetsType == SweetsType.Empty)
+            if (sweet.SweetType == SweetsType.Empty)
             {
                 Destroy(sweet.gameObject);
                 sweets[x, 0] = CreateNewSweet(SweetsType.Normal, x, 0, itemRoot);

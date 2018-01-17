@@ -21,15 +21,15 @@ public struct SweetsPrefabStruct
 
 public class SweetInfo : MonoBehaviour
 {
-    public SweetsType sweetsType { get; private set; }
+    public SweetsType SweetType { get; private set; }
     /// <summary>
     /// 用来记录在字典的X位置
     /// </summary>
-    public int x { get; private set; }
+    public int X { get; private set; }
     /// <summary>
     /// 用来记录在字典的Y位置
     /// </summary>
-    public int y { get; private set; }
+    public int Y { get; private set; }
     /// <summary>
     /// 移动组件
     /// </summary>
@@ -43,7 +43,7 @@ public class SweetInfo : MonoBehaviour
     {
         MoveComponent = GetComponent<MoveSweet>();
         ColorComponent = GetComponent<SweetColor>();
-        sweetsType = _sweetsType;
+        SweetType = _sweetsType;
         transform.SetParent(itemRoot);
         Move(_x, _y);
         if (_sweetsType == SweetsType.Empty)
@@ -59,7 +59,7 @@ public class SweetInfo : MonoBehaviour
 
     public SweetInfo ReInit(SweetsType _sweetsType)
     {
-        sweetsType = _sweetsType;
+        SweetType = _sweetsType;
         if (_sweetsType == SweetsType.Empty)
         {
             ClearColor();
@@ -86,8 +86,8 @@ public class SweetInfo : MonoBehaviour
     {
         if (CanMove())
         {
-            x = _x;
-            y = _y;
+            X = _x;
+            Y = _y;
             MoveComponent.Move(_x, _y);
         }
     }
