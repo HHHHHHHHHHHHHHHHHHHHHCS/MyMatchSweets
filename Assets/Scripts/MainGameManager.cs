@@ -9,6 +9,7 @@ public class MainGameManager : MonoBehaviour
 
     private readonly Vector2 startPos = new Vector2(-4.5f, 4.5f);
     private const int xColumn = 10, yColumn = 10;
+    private const float fillTime = 0.25f;
 
     [SerializeField]
     private List<SweetsPrefabStruct> sweetsPrefabList;
@@ -90,18 +91,18 @@ public class MainGameManager : MonoBehaviour
         {
             for (int j = 0; j < yColumn; j++)
             {
-                sweets[i, j] = CreateNewSweet(SweetsType.Empty, i, j, itemRoot);
+                sweets[i, j] = CreateNewSweet(SweetsType.Empty, itemRoot, i, j);
             }
         }
 
         StartCoroutine(AllFill());
     }
 
-    public SweetInfo CreateNewSweet(SweetsType _sweetsType, int _x, int _y, Transform itemRoot)
+    public SweetInfo CreateNewSweet(SweetsType _sweetsType, Transform itemRoot, int _x, int _y, bool needUpPos = false)
     {
         return Instantiate(sweetsPrefabDic[_sweetsType].prefab
-                    , Vector2.zero, Quaternion.identity, itemRoot)
-                    .Init(_sweetsType, _x, _y, itemRoot);
+                    , needUpPos ? CorrectPosition(_x, _y - 1) : Vector2.zero, Quaternion.identity, itemRoot)
+                    .Init(_sweetsType, itemRoot, _x, _y, fillTime);
     }
 
     public Vector2 CorrectPosition(int newX, int newY)
@@ -116,7 +117,7 @@ public class MainGameManager : MonoBehaviour
     {
         while (Fill())
         {
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(fillTime);
         }
     }
 
@@ -140,9 +141,9 @@ public class MainGameManager : MonoBehaviour
                     if (sweetUp.CanMove())
                     {
                         Destroy(sweet.gameObject);
-                        sweetUp.Move(x, y);
+                        sweetUp.Move(x, y, fillTime);
                         sweets[x, y] = sweetUp;
-                        sweets[x, y - 1] = CreateNewSweet(SweetsType.Empty, x, y, itemRoot);
+                        sweets[x, y - 1] = CreateNewSweet(SweetsType.Empty, itemRoot, x, y);
                         filledNotFinished = true;
                     }
                 }
@@ -157,7 +158,7 @@ public class MainGameManager : MonoBehaviour
             if (sweet.SweetType == SweetsType.Empty)
             {
                 Destroy(sweet.gameObject);
-                sweets[x, 0] = CreateNewSweet(SweetsType.Normal, x, 0, itemRoot);
+                sweets[x, 0] = CreateNewSweet(SweetsType.Normal, itemRoot, x, 0,true);
                 filledNotFinished = true;
             }
         }

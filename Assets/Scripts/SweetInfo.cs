@@ -39,20 +39,22 @@ public class SweetInfo : MonoBehaviour
     /// </summary>
     public SweetColor ColorComponent { get; private set; }
 
-    public SweetInfo Init(SweetsType _sweetsType, int _x, int _y, Transform itemRoot)
+    public SweetInfo Init(SweetsType _sweetsType, Transform itemRoot, int _x, int _y,float _time)
     {
         MoveComponent = GetComponent<MoveSweet>();
         ColorComponent = GetComponent<SweetColor>();
         SweetType = _sweetsType;
         transform.SetParent(itemRoot);
-        Move(_x, _y);
-        if (_sweetsType == SweetsType.Empty)
+
+        if (_sweetsType != SweetsType.Empty)
         {
-            ClearColor();
+            Move(_x, _y, _time);
+            SetColor();
         }
         else
         {
-            SetColor();
+            X = _x;
+            Y = _y;
         }
         return this;
     }
@@ -82,13 +84,13 @@ public class SweetInfo : MonoBehaviour
         return ColorComponent;
     }
 
-    public void Move(int _x, int _y)
+    public void Move(int _x, int _y,float _time)
     {
         if (CanMove())
         {
             X = _x;
             Y = _y;
-            MoveComponent.Move(_x, _y);
+            MoveComponent.Move(_x, _y, _time);
         }
     }
 
