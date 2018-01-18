@@ -95,11 +95,11 @@ public class MainGameManager : MonoBehaviour
             }
         }
         Destroy(sweets[4, 4].gameObject);
-        sweets[4, 4] = CreateNewSweet(SweetsType.Barrier, itemRoot, 4, 4, SweetsSpawnPos.Current);
+        sweets[4, 4] = CreateNewSweet(SweetsType.Barrier, itemRoot, 4, 4);
         StartCoroutine(AllFill());
     }
 
-    public SweetInfo CreateNewSweet(SweetsType _sweetsType, Transform itemRoot, int _x, int _y, SweetsSpawnPos posEnum = SweetsSpawnPos.Zero)
+    public SweetInfo CreateNewSweet(SweetsType _sweetsType, Transform itemRoot, int _x, int _y, SweetsSpawnPos posEnum = SweetsSpawnPos.Current)
     {
         Vector2 spawnPos = Vector2.zero; ;
         switch (posEnum)
@@ -145,22 +145,62 @@ public class MainGameManager : MonoBehaviour
     {
         bool filledNotFinished = false;//判断本次填充是否完成
 
-        for (int y = yColumn - 1; y > 0; y--)
+        for (int y = yColumn - 2; y >= 0; y--)
         {
             for (int x = 0; x < xColumn; x++)
             {
                 var sweet = sweets[x, y];//得到当前元素位置
 
-                if (sweet.SweetType == SweetsType.Empty)//如果该物体无法移动，则无法往下填充
+                if (sweet.CanMove())//如果无法移动则无法往下填充
                 {
-                    var sweetUp = sweets[x, y - 1];
-                    if (sweetUp.CanMove())
+                    var sweetDown = sweets[x, y + 1];
+
+                    if (sweetDown.SweetType == SweetsType.Empty)//垂直填充
                     {
-                        Destroy(sweet.gameObject);
-                        sweetUp.Move(x, y, fillTime);
-                        sweets[x, y] = sweetUp;
-                        sweets[x, y - 1] = CreateNewSweet(SweetsType.Empty, itemRoot, x, y);
+                        Destroy(sweetDown.gameObject);
+                        sweet.Move(x, y + 1, fillTime);
+                        sweets[x, y + 1] = sweet;
+                        sweets[x, y] = CreateNewSweet(SweetsType.Empty, itemRoot, x, y);
                         filledNotFinished = true;
+                    }
+                    else//斜向填充
+                    {
+                        for (int _downX = -1; _downX <= 1; _downX++)
+                        {
+                            if (_downX != 0)
+                            {
+                                int downX = x + _downX;
+                                if (downX >= 0 && downX < xColumn)
+                                {
+                                    SweetInfo downSweet = sweets[downX, y + 1];
+                                    if (downSweet.SweetType == SweetsType.Empty)
+                                    {
+                                        bool canfill = true;//用来判断垂直填充是否可以满足填充要求
+                                        for (int aboveY = y; aboveY >= 0; aboveY--)
+                                        {
+                                            SweetInfo sweetAbove = sweets[downX, aboveY];
+                                            if (sweetAbove.CanMove())
+                                            {
+                                                break;
+                                            }
+                                            else if (sweetAbove.SweetType != SweetsType.Empty)
+                                            {
+                                                canfill = false;
+                                                break;
+                                            }
+                                        }
+                                        if (!canfill)
+                                        {
+                                            Destroy(downSweet.gameObject);
+                                            sweet.Move(downX, y + 1, fillTime);
+                                            sweets[downX, y + 1] = sweet;
+                                            sweets[x, y] = CreateNewSweet(SweetsType.Empty, itemRoot, x, y);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
