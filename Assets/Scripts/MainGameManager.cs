@@ -9,7 +9,7 @@ public class MainGameManager : MonoBehaviour
 
     private readonly Vector2 startPos = new Vector2(-4.5f, 4.5f);
     private const int xColumn = 10, yColumn = 10;
-    private const float fillTime = 0.25f;
+    public const float fillTime = 0.25f;
 
     [SerializeField]
     private List<SweetsPrefabStruct> sweetsPrefabList;
@@ -25,6 +25,9 @@ public class MainGameManager : MonoBehaviour
     private Dictionary<SweetsType, SweetsPrefabStruct> sweetsPrefabDic;
     private Dictionary<SweetsColorType, SweetsColorStruct> sweetsColorDic;
     private SweetInfo[,] sweets;
+
+    private SweetInfo baseSweet;//按下的甜品
+    private SweetInfo changeSweet;//要交换甜品
 
 
     private void Awake()
@@ -94,8 +97,14 @@ public class MainGameManager : MonoBehaviour
                 sweets[i, j] = CreateNewSweet(SweetsType.Empty, itemRoot, i, j);
             }
         }
-        Destroy(sweets[4, 4].gameObject);
-        sweets[4, 4] = CreateNewSweet(SweetsType.Barrier, itemRoot, 4, 4);
+        Destroy(sweets[0, 4].gameObject);
+        sweets[0, 4] = CreateNewSweet(SweetsType.Barrier, itemRoot, 0, 4);
+        Destroy(sweets[3, 4].gameObject);
+        sweets[3, 4] = CreateNewSweet(SweetsType.Barrier, itemRoot, 3, 4);
+        Destroy(sweets[6, 4].gameObject);
+        sweets[6, 4] = CreateNewSweet(SweetsType.Barrier, itemRoot, 6, 4);
+        Destroy(sweets[9, 4].gameObject);
+        sweets[9, 4] = CreateNewSweet(SweetsType.Barrier, itemRoot, 9, 4);
         StartCoroutine(AllFill());
     }
 
@@ -221,5 +230,35 @@ public class MainGameManager : MonoBehaviour
 
 
         return filledNotFinished;
+    }
+
+    public void SetBaseSweet(SweetInfo sweet)
+    {
+        baseSweet = sweet;
+    }
+
+    public void SetChangeSweet(SweetInfo sweet)
+    {
+        changeSweet = sweet;
+    }
+
+    public void ReleaseSweet()
+    {
+        if(baseSweet&&changeSweet)
+        {
+            baseSweet.ExchangeSweets(changeSweet);
+        }
+        baseSweet = changeSweet = null;
+    }
+
+
+    public void ExchangeSweets(SweetInfo info1, SweetInfo info2)
+    {
+        sweets[info1.X, info1.Y] = info2;
+        sweets[info2.X, info2.Y] = info1;
+
+        int tempX = info1.X, tempY = info1.Y;
+        info1.Move(info2.X, info2.Y, fillTime);
+        info2.Move(tempX, tempY, fillTime);
     }
 }
