@@ -280,9 +280,7 @@ public class MainGameManager : MonoBehaviour
             List<SweetInfo> matchLineSweets = new List<SweetInfo>();
             List<SweetInfo> finisedMatchSweets = new List<SweetInfo>();
 
-            matchRowSweets.Add(sweet);//行匹配
-
-            for(int xDir=-1;xDir<=1;xDir++)
+            for (int xDir=-1;xDir<=1;xDir++)
             {
                 if(xDir==0)
                 {
@@ -329,18 +327,24 @@ public class MainGameManager : MonoBehaviour
                 }
             }
 
-            if (matchRowSweets.Count>=3)
+            if (matchRowSweets.Count>=2)
             {
                 finisedMatchSweets.AddRange(matchRowSweets);
             }
 
-            if (matchLineSweets.Count >= 3)
+            if (matchLineSweets.Count >= 2)
             {
                 finisedMatchSweets.AddRange(matchLineSweets);
             }
 
+            finisedMatchSweets.Add(sweet);
+
             if (finisedMatchSweets.Count>=3)
             {
+                foreach(var item in finisedMatchSweets)
+                {
+                    item.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.red;
+                }
                 return finisedMatchSweets;
             }
         }

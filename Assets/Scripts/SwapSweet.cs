@@ -13,7 +13,7 @@ public class SwapSweet : MonoBehaviour
 
     public bool CheckSwap(SweetInfo info)
     {
-        if (SweetInfo.CanSwap() && info.CanSwap())
+        if (info.CanSwap())
         {
             return IsAdjacent(info);
         }
@@ -28,9 +28,8 @@ public class SwapSweet : MonoBehaviour
 
     public bool ExchangeSweets(SweetInfo changeInfo)
     {
-        if (SweetInfo.CanMove() && changeInfo.CanMove()
-            && changeInfo.CanSwap() && CheckSwap(changeInfo)
-            &&changeInfo.ColorComponent.SweetColorType!=SweetInfo.ColorComponent.SweetColorType)
+        if (SweetInfo.CanMove() && changeInfo.CanMove() && CheckSwap(changeInfo)
+            && changeInfo.ColorComponent.SweetColorType != SweetInfo.ColorComponent.SweetColorType)
         {
             MainGameManager.Instance.ExchangeSweets(SweetInfo, changeInfo);
             return true;

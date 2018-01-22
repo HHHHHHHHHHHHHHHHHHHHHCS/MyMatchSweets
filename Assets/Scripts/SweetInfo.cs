@@ -130,7 +130,11 @@ public class SweetInfo : MonoBehaviour
 
     public bool ExchangeSweets(SweetInfo info)
     {
-        return SwapComponent.ExchangeSweets(info);
+        if(CanSwap())
+        {
+            return SwapComponent.ExchangeSweets(info);
+        }
+        return false;
     }
     #endregion
 }
