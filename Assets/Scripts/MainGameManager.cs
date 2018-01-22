@@ -256,9 +256,94 @@ public class MainGameManager : MonoBehaviour
     {
         sweets[info1.X, info1.Y] = info2;
         sweets[info2.X, info2.Y] = info1;
+        var list1 = MatchSweets(info1, info2.X, info2.Y);
+        var list2 = MatchSweets(info2, info1.X, info1.Y);
+        if (list1 != null||list2 !=null)
+        {
+            int tempX = info1.X, tempY = info1.Y;
+            info1.Move(info2.X, info2.Y, fillTime);
+            info2.Move(tempX, tempY, fillTime);
+        }
+        else
+        {
+            sweets[info1.X, info1.Y] = info1;
+            sweets[info2.X, info2.Y] = info2;
+        }
+    }
 
-        int tempX = info1.X, tempY = info1.Y;
-        info1.Move(info2.X, info2.Y, fillTime);
-        info2.Move(tempX, tempY, fillTime);
+    public List<SweetInfo> MatchSweets(SweetInfo sweet,int newX,int newY)
+    {
+        if(sweet.CanChangeColor())
+        {
+            SweetsColorType color = sweet.ColorComponent.SweetColorType;
+            List<SweetInfo> matchRowSweets = new List<SweetInfo>();
+            List<SweetInfo> matchLineSweets = new List<SweetInfo>();
+            List<SweetInfo> finisedMatchSweets = new List<SweetInfo>();
+
+            matchRowSweets.Add(sweet);//行匹配
+
+            for(int xDir=-1;xDir<=1;xDir++)
+            {
+                if(xDir==0)
+                {
+                    continue;
+                }
+                for(int xDistance = 1;xDistance<xColumn;xDistance++)
+                {
+                    int posX = newX + (xDir * xDistance);
+                    if(posX<0||posX>=xColumn)
+                    {
+                        break;
+                    }
+                    if(sweets[posX,newY].CanChangeColor()&&sweets[posX,newY].ColorComponent.SweetColorType==color)
+                    {
+                        matchRowSweets.Add(sweets[posX, newY]);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            for (int yDir = -1; yDir <= 1; yDir++)
+            {
+                if (yDir == 0)
+                {
+                    continue;
+                }
+                for (int yDistance = 1; yDistance < yColumn; yDistance++)
+                {
+                    int posY = newY + (yDir * yDistance);
+                    if (posY < 0 || posY >= yColumn)
+                    {
+                        break;
+                    }
+                    if (sweets[newX, posY].CanChangeColor() && sweets[newX, posY].ColorComponent.SweetColorType == color)
+                    {
+                        matchLineSweets.Add(sweets[newX, posY]);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+
+            if (matchRowSweets.Count>=3)
+            {
+                finisedMatchSweets.AddRange(matchRowSweets);
+            }
+
+            if (matchLineSweets.Count >= 3)
+            {
+                finisedMatchSweets.AddRange(matchLineSweets);
+            }
+
+            if (finisedMatchSweets.Count>=3)
+            {
+                return finisedMatchSweets;
+            }
+        }
+        return null;
     }
 }

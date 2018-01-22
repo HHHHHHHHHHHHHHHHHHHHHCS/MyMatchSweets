@@ -29,7 +29,8 @@ public class SwapSweet : MonoBehaviour
     public bool ExchangeSweets(SweetInfo changeInfo)
     {
         if (SweetInfo.CanMove() && changeInfo.CanMove()
-            && changeInfo.CanSwap() && CheckSwap(changeInfo))
+            && changeInfo.CanSwap() && CheckSwap(changeInfo)
+            &&changeInfo.ColorComponent.SweetColorType!=SweetInfo.ColorComponent.SweetColorType)
         {
             MainGameManager.Instance.ExchangeSweets(SweetInfo, changeInfo);
             return true;
@@ -40,19 +41,19 @@ public class SwapSweet : MonoBehaviour
     private void OnMouseEnter()
     {
         MainGameManager.Instance.SetChangeSweet(SweetInfo);
-        transform.GetChild(0).GetComponent<SpriteRenderer>().color = Color.red;
+        //transform.GetChild(0).GetComponent<SpriteRenderer>().color = Color.red;
     }
 
     private void OnMouseDown()
     {
         MainGameManager.Instance.SetBaseSweet(SweetInfo);
-        transform.GetChild(0).GetComponent<SpriteRenderer>().color = Color.blue;
+        //transform.GetChild(0).GetComponent<SpriteRenderer>().color = Color.blue;
     }
 
     private void OnMouseUp()
     {
         MainGameManager.Instance.ReleaseSweet();
-        transform.GetChild(0).GetComponent<SpriteRenderer>().color = Color.white;
+        //transform.GetChild(0).GetComponent<SpriteRenderer>().color = Color.white;
     }
 
 }

@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: 114952116279019284}
   - component: {fileID: 114393049679355390}
   - component: {fileID: 61959751157974470}
+  - component: {fileID: 95093009266165950}
   m_Layer: 0
   m_Name: NormalSweetPrefab
   m_TagString: Untagged
@@ -99,6 +100,23 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!95 &95093009266165950
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1173487681069008}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 13c2a6063e3c3f04b8b194bf61a95bcf, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!114 &114072981493595622
 MonoBehaviour:
   m_ObjectHideFlags: 1
