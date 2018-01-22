@@ -19,12 +19,13 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4743980942883358}
+  - component: {fileID: 95093009266165950}
+  - component: {fileID: 61959751157974470}
   - component: {fileID: 114072981493595622}
   - component: {fileID: 114810332470041058}
   - component: {fileID: 114952116279019284}
   - component: {fileID: 114393049679355390}
-  - component: {fileID: 61959751157974470}
-  - component: {fileID: 95093009266165950}
+  - component: {fileID: 114490868434291086}
   m_Layer: 0
   m_Name: NormalSweetPrefab
   m_TagString: Untagged
@@ -137,6 +138,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aa075aa840336254c8cd5ca1ea6707ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114490868434291086
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1173487681069008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73f63b64545614c4baaff4eacd2fe7e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &114810332470041058

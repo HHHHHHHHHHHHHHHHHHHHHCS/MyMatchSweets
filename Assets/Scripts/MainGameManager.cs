@@ -24,7 +24,7 @@ public class MainGameManager : MonoBehaviour
     private Transform itemRoot;
     private Dictionary<SweetsType, SweetsPrefabStruct> sweetsPrefabDic;
     private Dictionary<SweetsColorType, SweetsColorStruct> sweetsColorDic;
-    private SweetInfo[,] sweets;
+    private SweetInfo[,] sweetsArray;
 
     private SweetInfo baseSweet;//按下的甜品
     private SweetInfo changeSweet;//要交换甜品
@@ -35,6 +35,7 @@ public class MainGameManager : MonoBehaviour
         Init();
     }
 
+    #region Init
     private void Init()
     {
         Instance = this;
@@ -89,25 +90,27 @@ public class MainGameManager : MonoBehaviour
 
     private void InitSweetsArray()
     {
-        sweets = new SweetInfo[xColumn, yColumn];
+        sweetsArray = new SweetInfo[xColumn, yColumn];
         for (int i = 0; i < xColumn; i++)
         {
             for (int j = 0; j < yColumn; j++)
             {
-                sweets[i, j] = CreateNewSweet(SweetsType.Empty, itemRoot, i, j);
+                sweetsArray[i, j] = CreateNewSweet(SweetsType.Empty, itemRoot, i, j);
             }
         }
-        Destroy(sweets[0, 4].gameObject);
-        sweets[0, 4] = CreateNewSweet(SweetsType.Barrier, itemRoot, 0, 4);
-        Destroy(sweets[3, 4].gameObject);
-        sweets[3, 4] = CreateNewSweet(SweetsType.Barrier, itemRoot, 3, 4);
-        Destroy(sweets[6, 4].gameObject);
-        sweets[6, 4] = CreateNewSweet(SweetsType.Barrier, itemRoot, 6, 4);
-        Destroy(sweets[9, 4].gameObject);
-        sweets[9, 4] = CreateNewSweet(SweetsType.Barrier, itemRoot, 9, 4);
+        Destroy(sweetsArray[0, 4].gameObject);
+        sweetsArray[0, 4] = CreateNewSweet(SweetsType.Barrier, itemRoot, 0, 4);
+        Destroy(sweetsArray[3, 4].gameObject);
+        sweetsArray[3, 4] = CreateNewSweet(SweetsType.Barrier, itemRoot, 3, 4);
+        Destroy(sweetsArray[6, 4].gameObject);
+        sweetsArray[6, 4] = CreateNewSweet(SweetsType.Barrier, itemRoot, 6, 4);
+        Destroy(sweetsArray[9, 4].gameObject);
+        sweetsArray[9, 4] = CreateNewSweet(SweetsType.Barrier, itemRoot, 9, 4);
         StartCoroutine(AllFill());
     }
+    #endregion
 
+    #region Create And Fill
     public SweetInfo CreateNewSweet(SweetsType _sweetsType, Transform itemRoot, int _x, int _y, SweetsSpawnPos posEnum = SweetsSpawnPos.Current)
     {
         Vector2 spawnPos = Vector2.zero; ;
@@ -140,10 +143,15 @@ public class MainGameManager : MonoBehaviour
     /// </summary>
     public IEnumerator AllFill()
     {
-        while (Fill())
+        bool isClear;
+        do
         {
-            yield return new WaitForSeconds(fillTime);
-        }
+            while (Fill())
+            {
+                yield return new WaitForSeconds(fillTime);
+            }
+            isClear = ClearAllMatchSweet();
+        } while (isClear);
     }
 
 
@@ -158,18 +166,18 @@ public class MainGameManager : MonoBehaviour
         {
             for (int x = 0; x < xColumn; x++)
             {
-                var sweet = sweets[x, y];//得到当前元素位置
+                var sweet = sweetsArray[x, y];//得到当前元素位置
 
                 if (sweet.CanMove())//如果无法移动则无法往下填充
                 {
-                    var sweetDown = sweets[x, y + 1];
+                    var sweetDown = sweetsArray[x, y + 1];
 
                     if (sweetDown.SweetType == SweetsType.Empty)//垂直填充
                     {
                         Destroy(sweetDown.gameObject);
                         sweet.Move(x, y + 1, fillTime);
-                        sweets[x, y + 1] = sweet;
-                        sweets[x, y] = CreateNewSweet(SweetsType.Empty, itemRoot, x, y);
+                        sweetsArray[x, y + 1] = sweet;
+                        sweetsArray[x, y] = CreateNewSweet(SweetsType.Empty, itemRoot, x, y);
                         filledNotFinished = true;
                     }
                     else//斜向填充
@@ -181,13 +189,13 @@ public class MainGameManager : MonoBehaviour
                                 int downX = x + _downX;
                                 if (downX >= 0 && downX < xColumn)
                                 {
-                                    SweetInfo downSweet = sweets[downX, y + 1];
+                                    SweetInfo downSweet = sweetsArray[downX, y + 1];
                                     if (downSweet.SweetType == SweetsType.Empty)
                                     {
                                         bool canfill = true;//用来判断垂直填充是否可以满足填充要求
                                         for (int aboveY = y; aboveY >= 0; aboveY--)
                                         {
-                                            SweetInfo sweetAbove = sweets[downX, aboveY];
+                                            SweetInfo sweetAbove = sweetsArray[downX, aboveY];
                                             if (sweetAbove.CanMove())
                                             {
                                                 break;
@@ -202,8 +210,8 @@ public class MainGameManager : MonoBehaviour
                                         {
                                             Destroy(downSweet.gameObject);
                                             sweet.Move(downX, y + 1, fillTime);
-                                            sweets[downX, y + 1] = sweet;
-                                            sweets[x, y] = CreateNewSweet(SweetsType.Empty, itemRoot, x, y);
+                                            sweetsArray[downX, y + 1] = sweet;
+                                            sweetsArray[x, y] = CreateNewSweet(SweetsType.Empty, itemRoot, x, y);
                                             break;
                                         }
                                     }
@@ -218,12 +226,12 @@ public class MainGameManager : MonoBehaviour
 
         for (int x = 0; x < xColumn; x++)
         {
-            var sweet = sweets[x, 0];//得到当前元素位置
+            var sweet = sweetsArray[x, 0];//得到当前元素位置
 
             if (sweet.SweetType == SweetsType.Empty)
             {
                 Destroy(sweet.gameObject);
-                sweets[x, 0] = CreateNewSweet(SweetsType.Normal, itemRoot, x, 0, SweetsSpawnPos.Up);
+                sweetsArray[x, 0] = CreateNewSweet(SweetsType.Normal, itemRoot, x, 0, SweetsSpawnPos.Up);
                 filledNotFinished = true;
             }
         }
@@ -232,6 +240,10 @@ public class MainGameManager : MonoBehaviour
         return filledNotFinished;
     }
 
+    #endregion
+
+
+    #region Swap
     public void SetBaseSweet(SweetInfo sweet)
     {
         baseSweet = sweet;
@@ -244,7 +256,7 @@ public class MainGameManager : MonoBehaviour
 
     public void ReleaseSweet()
     {
-        if(baseSweet&&changeSweet)
+        if (baseSweet && changeSweet)
         {
             baseSweet.ExchangeSweets(changeSweet);
         }
@@ -252,50 +264,54 @@ public class MainGameManager : MonoBehaviour
     }
 
 
-    public void ExchangeSweets(SweetInfo info1, SweetInfo info2)
+    public bool ExchangeSweets(SweetInfo info1, SweetInfo info2)
     {
-        sweets[info1.X, info1.Y] = info2;
-        sweets[info2.X, info2.Y] = info1;
+        sweetsArray[info1.X, info1.Y] = info2;
+        sweetsArray[info2.X, info2.Y] = info1;
         var list1 = MatchSweets(info1, info2.X, info2.Y);
         var list2 = MatchSweets(info2, info1.X, info1.Y);
-        if (list1 != null||list2 !=null)
+        if (list1 != null || list2 != null)
         {
             int tempX = info1.X, tempY = info1.Y;
             info1.Move(info2.X, info2.Y, fillTime);
             info2.Move(tempX, tempY, fillTime);
+            ClearSweets(list1);
+            ClearSweets(list2);
+            return true;
         }
         else
         {
-            sweets[info1.X, info1.Y] = info1;
-            sweets[info2.X, info2.Y] = info2;
+            sweetsArray[info1.X, info1.Y] = info1;
+            sweetsArray[info2.X, info2.Y] = info2;
+            return false;
         }
     }
 
-    public List<SweetInfo> MatchSweets(SweetInfo sweet,int newX,int newY)
+    public List<SweetInfo> MatchSweets(SweetInfo sweet, int newX, int newY)
     {
-        if(sweet.CanChangeColor())
+        if (sweet.CanChangeColor())
         {
             SweetsColorType color = sweet.ColorComponent.SweetColorType;
             List<SweetInfo> matchRowSweets = new List<SweetInfo>();
             List<SweetInfo> matchLineSweets = new List<SweetInfo>();
             List<SweetInfo> finisedMatchSweets = new List<SweetInfo>();
 
-            for (int xDir=-1;xDir<=1;xDir++)
+            for (int xDir = -1; xDir <= 1; xDir++)
             {
-                if(xDir==0)
+                if (xDir == 0)
                 {
                     continue;
                 }
-                for(int xDistance = 1;xDistance<xColumn;xDistance++)
+                for (int xDistance = 1; xDistance < xColumn; xDistance++)
                 {
                     int posX = newX + (xDir * xDistance);
-                    if(posX<0||posX>=xColumn)
+                    if (posX < 0 || posX >= xColumn)
                     {
                         break;
                     }
-                    if(sweets[posX,newY].CanChangeColor()&&sweets[posX,newY].ColorComponent.SweetColorType==color)
+                    if (sweetsArray[posX, newY].CanChangeColor() && sweetsArray[posX, newY].ColorComponent.SweetColorType == color)
                     {
-                        matchRowSweets.Add(sweets[posX, newY]);
+                        matchRowSweets.Add(sweetsArray[posX, newY]);
                     }
                     else
                     {
@@ -316,9 +332,9 @@ public class MainGameManager : MonoBehaviour
                     {
                         break;
                     }
-                    if (sweets[newX, posY].CanChangeColor() && sweets[newX, posY].ColorComponent.SweetColorType == color)
+                    if (sweetsArray[newX, posY].CanChangeColor() && sweetsArray[newX, posY].ColorComponent.SweetColorType == color)
                     {
-                        matchLineSweets.Add(sweets[newX, posY]);
+                        matchLineSweets.Add(sweetsArray[newX, posY]);
                     }
                     else
                     {
@@ -327,7 +343,7 @@ public class MainGameManager : MonoBehaviour
                 }
             }
 
-            if (matchRowSweets.Count>=2)
+            if (matchRowSweets.Count >= 2)
             {
                 finisedMatchSweets.AddRange(matchRowSweets);
             }
@@ -339,15 +355,61 @@ public class MainGameManager : MonoBehaviour
 
             finisedMatchSweets.Add(sweet);
 
-            if (finisedMatchSweets.Count>=3)
+            if (finisedMatchSweets.Count >= 3)
             {
-                foreach(var item in finisedMatchSweets)
-                {
-                    item.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.red;
-                }
                 return finisedMatchSweets;
             }
         }
         return null;
     }
+    #endregion
+
+    #region Clear
+    public bool ClearSweets(List<SweetInfo> list)
+    {
+        if (list != null && list.Count > 0)
+        {
+            foreach (var item in list)
+            {
+                ClearSweet(item);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public bool ClearSweets(int x, int y)
+    {
+        return ClearSweet(sweetsArray[x, y]);
+    }
+
+
+    public bool ClearSweet(SweetInfo item)
+    {
+        if (item.CanClear() && !item.ClearComponent.IsClear)
+        {
+            sweetsArray[item.X, item.Y] = CreateNewSweet(SweetsType.Empty, itemRoot, item.X, item.Y);
+            item.ClearComponent.Clear();
+            return true;
+        }
+        return false;
+    }
+
+    private bool ClearAllMatchSweet()
+    {
+        bool needRefill = false;
+        for (int y = 0; y < yColumn; y++)
+        {
+            for (int x = 0; x < xColumn; x++)
+            {
+                if (sweetsArray[x, y].CanClear())
+                {
+                    needRefill =ExchangeSweets(sweetsArray[x, y], sweetsArray[x, y]);
+                }
+            }
+        }
+
+        return needRefill;
+    }
+    #endregion
 }

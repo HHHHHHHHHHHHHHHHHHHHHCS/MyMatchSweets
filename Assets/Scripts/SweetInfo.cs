@@ -49,12 +49,17 @@ public class SweetInfo : MonoBehaviour
     /// 交换组件
     /// </summary>
     public SwapSweet SwapComponent { get; private set; }
+    /// <summary>
+    /// 清除组件
+    /// </summary>
+    public SweetClear ClearComponent { get; private set; }
 
     public SweetInfo Init(SweetsType _sweetsType, Transform itemRoot, int _x, int _y, float _time)
     {
         MoveComponent = GetComponent<MoveSweet>();
         ColorComponent = GetComponent<SweetColor>();
         SwapComponent = GetComponent<SwapSweet>();
+        ClearComponent = GetComponent<SweetClear>();
         SweetType = _sweetsType;
         transform.SetParent(itemRoot);
         if (CanSwap())
@@ -92,6 +97,11 @@ public class SweetInfo : MonoBehaviour
     public bool CanSwap()
     {
         return SwapComponent;
+    }
+
+    public bool CanClear ()
+    {
+        return ClearComponent;
     }
 
     public void Move(int _x, int _y, float _time)
