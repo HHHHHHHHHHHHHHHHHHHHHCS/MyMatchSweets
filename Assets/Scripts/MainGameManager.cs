@@ -7,8 +7,8 @@ public class MainGameManager : MonoBehaviour
 {
     public static MainGameManager Instance { get; private set; }
 
-    private readonly Vector2 startPos = new Vector2(-4.5f, 4.5f);
-    private const int xColumn = 10, yColumn = 10;
+    private readonly Vector2 startPos = new Vector2(-4.5f, 3.5f);
+    private const int xColumn = 9, yColumn = 8;
     public const float fillTime = 0.25f;
 
     [SerializeField]
@@ -104,8 +104,8 @@ public class MainGameManager : MonoBehaviour
         sweetsArray[3, 4] = CreateNewSweet(SweetsType.Barrier, itemRoot, 3, 4);
         Destroy(sweetsArray[6, 4].gameObject);
         sweetsArray[6, 4] = CreateNewSweet(SweetsType.Barrier, itemRoot, 6, 4);
-        Destroy(sweetsArray[9, 4].gameObject);
-        sweetsArray[9, 4] = CreateNewSweet(SweetsType.Barrier, itemRoot, 9, 4);
+        Destroy(sweetsArray[8, 4].gameObject);
+        sweetsArray[8, 4] = CreateNewSweet(SweetsType.Barrier, itemRoot, 8, 4);
         StartCoroutine(AllFill());
     }
     #endregion
@@ -146,11 +146,15 @@ public class MainGameManager : MonoBehaviour
         bool isClear;
         do
         {
+            yield return new WaitForSeconds(fillTime);
+
+
             while (Fill())
             {
                 yield return new WaitForSeconds(fillTime);
             }
             isClear = ClearAllMatchSweet();
+
         } while (isClear);
     }
 
@@ -242,7 +246,6 @@ public class MainGameManager : MonoBehaviour
 
     #endregion
 
-
     #region Swap
     public void SetBaseSweet(SweetInfo sweet)
     {
@@ -277,6 +280,7 @@ public class MainGameManager : MonoBehaviour
             info2.Move(tempX, tempY, fillTime);
             ClearSweets(list1);
             ClearSweets(list2);
+            StartCoroutine(AllFill());
             return true;
         }
         else
@@ -404,7 +408,7 @@ public class MainGameManager : MonoBehaviour
             {
                 if (sweetsArray[x, y].CanClear())
                 {
-                    needRefill =ExchangeSweets(sweetsArray[x, y], sweetsArray[x, y]);
+                    needRefill = ExchangeSweets(sweetsArray[x, y], sweetsArray[x, y]);
                 }
             }
         }
