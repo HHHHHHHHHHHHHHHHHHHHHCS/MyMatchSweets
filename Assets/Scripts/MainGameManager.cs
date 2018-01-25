@@ -18,6 +18,8 @@ public class MainGameManager : MonoBehaviour
     [SerializeField]
     private GameObject gridPrefab;
 
+    public MainUIManager MainUIManager { get; private set; }
+    public MainAudioManager MainAudioManager { get; private set; }
     public Dictionary<SweetsType, SweetsPrefabStruct> SweetsPrefabDic { get { return sweetsPrefabDic; } }
     public Dictionary<SweetsColorType, SweetsColorStruct> SweetsColorDic { get { return sweetsColorDic; } }
 
@@ -29,24 +31,37 @@ public class MainGameManager : MonoBehaviour
     private SweetInfo baseSweet;//按下的甜品
     private SweetInfo changeSweet;//要交换甜品
 
+    private float gameTime;
+    private int score;
+    private bool isGameOver;
+
 
     private void Awake()
     {
         Init();
     }
 
+    private void Update()
+    {
+        RunTime();
+    }
+
     #region Init
     private void Init()
     {
         Instance = this;
-        InitRoot();
+        InitObject();
         InitSpawnGrid();
         InitSweetsDic();
         InitSweetsArray();
+
+        gameTime = 60f;
     }
 
-    private void InitRoot()
+    private void InitObject()
     {
+        MainUIManager = GameObject.Find("MainUIRoot").GetComponent<MainUIManager>().Init();
+        MainAudioManager = GameObject.Find("MainAudioManager").GetComponent<MainAudioManager>().Init();
         itemRoot = GameObject.Find("ItemRoot").transform;
     }
 
@@ -249,12 +264,18 @@ public class MainGameManager : MonoBehaviour
     #region Swap
     public void SetBaseSweet(SweetInfo sweet)
     {
-        baseSweet = sweet;
+        if (!isGameOver)
+        {
+            baseSweet = sweet;
+        }
     }
 
     public void SetChangeSweet(SweetInfo sweet)
     {
-        changeSweet = sweet;
+        if (!isGameOver)
+        {
+            changeSweet = sweet;
+        }
     }
 
     public void ReleaseSweet()
@@ -373,10 +394,15 @@ public class MainGameManager : MonoBehaviour
     {
         if (list != null && list.Count > 0)
         {
+            int realNumber = 0;
             foreach (var item in list)
             {
-                ClearSweet(item);
+                if (ClearSweet(item))
+                {
+                    realNumber++;
+                }
             }
+            GetScore(realNumber);
             return true;
         }
         return false;
@@ -386,7 +412,6 @@ public class MainGameManager : MonoBehaviour
     {
         return ClearSweet(sweetsArray[x, y]);
     }
-
 
     public bool ClearSweet(SweetInfo item)
     {
@@ -416,4 +441,49 @@ public class MainGameManager : MonoBehaviour
         return needRefill;
     }
     #endregion
+
+    #region Score And Time
+    public void GetScore(int number)
+    {
+        score += number * number;
+        if (MainAudioManager)
+        {
+            MainAudioManager.PlayClearSweetAudio();
+        }
+        if (MainUIManager)
+        {
+            MainUIManager.RefreshScore(score);
+        }
+    }
+
+    private void RunTime()
+    {
+        if (isGameOver)
+        {
+            return;
+        }
+        gameTime -= Time.deltaTime;
+        if (gameTime <= 0)
+        {
+            TimeOver();
+        }
+        else if (MainUIManager)
+        {
+            MainUIManager.RefreshTime(gameTime);
+        }
+    }
+
+    private void TimeOver()
+    {
+        gameTime = 0;
+        isGameOver = true;
+        baseSweet = changeSweet = null;
+        if (MainUIManager)
+        {
+            MainUIManager.RefreshTime(gameTime);
+        }
+    }
+    #endregion
+
+
 }

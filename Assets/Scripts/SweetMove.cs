@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveSweet : MonoBehaviour
+public class SweetMove : MonoBehaviour
 {
     private IEnumerator moveCoroutine;
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SwapSweet : MonoBehaviour
+public class SweetSwap : MonoBehaviour
 {
     public SweetInfo SweetInfo { get; private set; }
 
@@ -40,19 +40,16 @@ public class SwapSweet : MonoBehaviour
     private void OnMouseEnter()
     {
         MainGameManager.Instance.SetChangeSweet(SweetInfo);
-        //transform.GetChild(0).GetComponent<SpriteRenderer>().color = Color.red;
     }
 
     private void OnMouseDown()
     {
         MainGameManager.Instance.SetBaseSweet(SweetInfo);
-        //transform.GetChild(0).GetComponent<SpriteRenderer>().color = Color.blue;
     }
 
     private void OnMouseUp()
     {
         MainGameManager.Instance.ReleaseSweet();
-        //transform.GetChild(0).GetComponent<SpriteRenderer>().color = Color.white;
     }
 
 }

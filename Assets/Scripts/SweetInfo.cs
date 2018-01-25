@@ -40,7 +40,7 @@ public class SweetInfo : MonoBehaviour
     /// <summary>
     /// 移动组件
     /// </summary>
-    public MoveSweet MoveComponent { get; private set; }
+    public SweetMove MoveComponent { get; private set; }
     /// <summary>
     /// 颜色组件
     /// </summary>
@@ -48,7 +48,7 @@ public class SweetInfo : MonoBehaviour
     /// <summary>
     /// 交换组件
     /// </summary>
-    public SwapSweet SwapComponent { get; private set; }
+    public SweetSwap SwapComponent { get; private set; }
     /// <summary>
     /// 清除组件
     /// </summary>
@@ -56,9 +56,9 @@ public class SweetInfo : MonoBehaviour
 
     public SweetInfo Init(SweetsType _sweetsType, Transform itemRoot, int _x, int _y, float _time)
     {
-        MoveComponent = GetComponent<MoveSweet>();
+        MoveComponent = GetComponent<SweetMove>();
         ColorComponent = GetComponent<SweetColor>();
-        SwapComponent = GetComponent<SwapSweet>();
+        SwapComponent = GetComponent<SweetSwap>();
         ClearComponent = GetComponent<SweetClear>();
         SweetType = _sweetsType;
         transform.SetParent(itemRoot);
