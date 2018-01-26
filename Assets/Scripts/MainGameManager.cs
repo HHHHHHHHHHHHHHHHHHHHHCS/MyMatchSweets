@@ -33,6 +33,7 @@ public class MainGameManager : MonoBehaviour
 
     private float gameTime;
     private int score;
+    private float addScore;
     private bool isGameOver;
 
 
@@ -44,6 +45,7 @@ public class MainGameManager : MonoBehaviour
     private void Update()
     {
         RunTime();
+        UpdateScore();
     }
 
     #region Init
@@ -450,9 +452,15 @@ public class MainGameManager : MonoBehaviour
         {
             MainAudioManager.PlayClearSweetAudio();
         }
+    }
+
+    public void UpdateScore()
+    {
+        var _score = Mathf.Clamp((score - addScore) * Time.deltaTime, 0.15f, 10);
+        addScore = Mathf.Clamp((addScore + _score), 0, score);
         if (MainUIManager)
         {
-            MainUIManager.RefreshScore(score);
+            MainUIManager.RefreshScore((int)addScore);
         }
     }
 
@@ -481,6 +489,7 @@ public class MainGameManager : MonoBehaviour
         if (MainUIManager)
         {
             MainUIManager.RefreshTime(gameTime);
+            MainUIManager.TimeOver();
         }
     }
     #endregion

@@ -29,4 +29,9 @@ public class MainUIManager : MonoBehaviour
     {
         scoreText.text = score.ToString();
     }
+
+    public void TimeOver()
+    {
+        timeText.GetComponent<Animation>().Stop();
+    }
 }
