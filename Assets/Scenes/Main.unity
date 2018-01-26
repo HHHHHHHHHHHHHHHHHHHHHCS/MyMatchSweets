@@ -191,7 +191,7 @@ GameObject:
   - component: {fileID: 80009378}
   - component: {fileID: 80009377}
   m_Layer: 5
-  m_Name: Img_Quit
+  m_Name: Img_Back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -403,6 +403,10 @@ MonoBehaviour:
   timeText: {fileID: 703968330}
   scoreText: {fileID: 933364382}
   backBtn: {fileID: 1823253989}
+  timeOverBg: {fileID: 1800132106}
+  endScoreText: {fileID: 1657620746}
+  endBackBtn: {fileID: 1129384783}
+  restartBtn: {fileID: 505634880}
 --- !u!1 &184382851
 GameObject:
   m_ObjectHideFlags: 0
@@ -2026,7 +2030,7 @@ GameObject:
   - component: {fileID: 1129384784}
   - component: {fileID: 1129384783}
   m_Layer: 5
-  m_Name: Btn_Quit
+  m_Name: Btn_Back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3431,7 +3435,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1800132107
 RectTransform:
   m_ObjectHideFlags: 0

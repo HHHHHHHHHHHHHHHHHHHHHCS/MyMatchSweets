@@ -489,7 +489,7 @@ public class MainGameManager : MonoBehaviour
         if (MainUIManager)
         {
             MainUIManager.RefreshTime(gameTime);
-            MainUIManager.TimeOver();
+            MainUIManager.TimeOver(score);
         }
     }
     #endregion
