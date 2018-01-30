@@ -9,11 +9,16 @@ public class SweetClear : MonoBehaviour
 
     public virtual void Clear()
     {
+        Clear(AnimString);
+    }
+
+    public virtual void Clear(string str)
+    {
         IsClear = true;
         Animator anim = GetComponent<Animator>();
         if (anim)
         {
-            anim.Play(AnimString);
+            anim.Play(str);
             Destroy(gameObject, anim.GetCurrentAnimatorStateInfo(0).length);
         }
         else

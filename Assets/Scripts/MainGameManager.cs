@@ -112,23 +112,23 @@ public class MainGameManager : MonoBehaviour
         {
             for (int j = 0; j < yColumn; j++)
             {
-                sweetsArray[i, j] = CreateNewSweet(SweetsType.Empty, itemRoot, i, j);
+                sweetsArray[i, j] = CreateNewSweet(SweetsType.Empty, i, j);
             }
         }
         Destroy(sweetsArray[0, 4].gameObject);
-        sweetsArray[0, 4] = CreateNewSweet(SweetsType.Barrier, itemRoot, 0, 4);
+        sweetsArray[0, 4] = CreateNewSweet(SweetsType.Barrier, 0, 4);
         Destroy(sweetsArray[3, 4].gameObject);
-        sweetsArray[3, 4] = CreateNewSweet(SweetsType.Barrier, itemRoot, 3, 4);
+        sweetsArray[3, 4] = CreateNewSweet(SweetsType.Barrier, 3, 4);
         Destroy(sweetsArray[6, 4].gameObject);
-        sweetsArray[6, 4] = CreateNewSweet(SweetsType.Barrier, itemRoot, 6, 4);
+        sweetsArray[6, 4] = CreateNewSweet(SweetsType.Barrier, 6, 4);
         Destroy(sweetsArray[8, 4].gameObject);
-        sweetsArray[8, 4] = CreateNewSweet(SweetsType.Barrier, itemRoot, 8, 4);
+        sweetsArray[8, 4] = CreateNewSweet(SweetsType.Barrier, 8, 4);
         StartCoroutine(AllFill());
     }
     #endregion
 
     #region Create And Fill
-    public SweetInfo CreateNewSweet(SweetsType _sweetsType, Transform itemRoot, int _x, int _y, SweetsSpawnPos posEnum = SweetsSpawnPos.Current)
+    public SweetInfo CreateNewSweet(SweetsType _sweetsType, int _x, int _y, SweetsSpawnPos posEnum = SweetsSpawnPos.Current, Transform _itemRoot = null)
     {
         Vector2 spawnPos = Vector2.zero; ;
         switch (posEnum)
@@ -146,7 +146,7 @@ public class MainGameManager : MonoBehaviour
                 break;
         }
         return Instantiate(sweetsPrefabDic[_sweetsType].prefab
-                    , spawnPos, Quaternion.identity, itemRoot)
+                    , spawnPos, Quaternion.identity, _itemRoot ? _itemRoot : itemRoot)
                     .Init(_sweetsType, itemRoot, _x, _y, fillTime);
     }
 
@@ -198,7 +198,7 @@ public class MainGameManager : MonoBehaviour
                         Destroy(sweetDown.gameObject);
                         sweet.Move(x, y + 1, fillTime);
                         sweetsArray[x, y + 1] = sweet;
-                        sweetsArray[x, y] = CreateNewSweet(SweetsType.Empty, itemRoot, x, y);
+                        sweetsArray[x, y] = CreateNewSweet(SweetsType.Empty, x, y);
                         filledNotFinished = true;
                     }
                     else//斜向填充
@@ -232,7 +232,7 @@ public class MainGameManager : MonoBehaviour
                                             Destroy(downSweet.gameObject);
                                             sweet.Move(downX, y + 1, fillTime);
                                             sweetsArray[downX, y + 1] = sweet;
-                                            sweetsArray[x, y] = CreateNewSweet(SweetsType.Empty, itemRoot, x, y);
+                                            sweetsArray[x, y] = CreateNewSweet(SweetsType.Empty, x, y);
                                             break;
                                         }
                                     }
@@ -252,7 +252,7 @@ public class MainGameManager : MonoBehaviour
             if (sweet.SweetType == SweetsType.Empty)
             {
                 Destroy(sweet.gameObject);
-                sweetsArray[x, 0] = CreateNewSweet(SweetsType.Normal, itemRoot, x, 0, SweetsSpawnPos.Up);
+                sweetsArray[x, 0] = CreateNewSweet(SweetsType.Normal, x, 0, SweetsSpawnPos.Up);
                 filledNotFinished = true;
             }
         }
@@ -419,11 +419,52 @@ public class MainGameManager : MonoBehaviour
     {
         if (item.CanClear() && !item.ClearComponent.IsClear)
         {
-            sweetsArray[item.X, item.Y] = CreateNewSweet(SweetsType.Empty, itemRoot, item.X, item.Y);
+            sweetsArray[item.X, item.Y] = CreateNewSweet(SweetsType.Empty, item.X, item.Y);
+            ClearBiscuit(item);
             item.ClearComponent.Clear();
             return true;
         }
         return false;
+    }
+
+    public bool ClearBiscuit(int x, int y)
+    {
+        return ClearBiscuit(sweetsArray[x, y]);
+    }
+
+    public bool ClearBiscuit(SweetInfo item)
+    {
+        bool haveClear = false;
+        for (int friendX = item.X - 1; friendX <= item.X + 1; friendX++)
+        {
+            if (friendX == item.X || friendX < 0 || friendX >= xColumn)
+            {
+                continue;
+            }
+            var newItem = sweetsArray[friendX, item.Y];
+            if (newItem.SweetType == SweetsType.Barrier && newItem.CanClear())
+            {
+                sweetsArray[friendX, item.Y] = CreateNewSweet(SweetsType.Empty, friendX, item.Y);
+                newItem.ClearComponent.Clear();
+                haveClear = true;
+            }
+        }
+
+        for (int friendY = item.Y - 1; friendY <= item.Y + 1; friendY++)
+        {
+            if (friendY == item.Y || friendY < 0 || friendY >= yColumn)
+            {
+                continue;
+            }
+            var newItem = sweetsArray[item.X, friendY];
+            if (newItem.SweetType == SweetsType.Barrier && newItem.CanClear())
+            {
+                sweetsArray[item.X, friendY] = CreateNewSweet(SweetsType.Empty, item.X, friendY);
+                newItem.ClearComponent.Clear();
+                haveClear = true;
+            }
+        }
+        return haveClear;
     }
 
     private bool ClearAllMatchSweet()
