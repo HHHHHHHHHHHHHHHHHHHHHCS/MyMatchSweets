@@ -66,18 +66,19 @@ public class SweetInfo : MonoBehaviour
             SwapComponent.Init(this);
         }
 
-        if (_sweetsType != SweetsType.Empty)
+        if(CanMove())
         {
             Move(_x, _y, _time);
-            if (_sweetsType == SweetsType.Normal)
-            {
-                SetColor();
-            }
         }
         else
         {
             X = _x;
             Y = _y;
+        }
+
+        if (_sweetsType == SweetsType.Normal)
+        {
+            SetColor();
         }
         return this;
     }

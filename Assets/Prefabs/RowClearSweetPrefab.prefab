@@ -41,7 +41,7 @@ GameObject:
   - component: {fileID: 114443713021801802}
   - component: {fileID: 114873278301425030}
   - component: {fileID: 114145887420649464}
-  - component: {fileID: 114065455219226810}
+  - component: {fileID: 114347839946302840}
   m_Layer: 0
   m_Name: RowClearSweetPrefab
   m_TagString: Untagged
@@ -118,17 +118,6 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!114 &114065455219226810
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1669009910399208}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73f63b64545614c4baaff4eacd2fe7e5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114145887420649464
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -151,6 +140,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c21437ff792bf91448059043d08d7af9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114347839946302840
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1669009910399208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06d1c7e31f2494847b759f9b46bc5184, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isRow: 1
 --- !u!114 &114443713021801802
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -26,6 +26,9 @@ public class MainGameManager : MonoBehaviour
     private Transform itemRoot;
     private SweetInfo[,] sweetsArray;
 
+    private Queue<int> saveClearRow;
+    private Queue<int> saveClearColumn;
+
     private SweetInfo baseSweet;//按下的甜品
     private SweetInfo changeSweet;//要交换甜品
 
@@ -33,7 +36,6 @@ public class MainGameManager : MonoBehaviour
     private int score;
     private float addScore;
     private bool isGameOver;
-
 
     private void Awake()
     {
@@ -80,6 +82,9 @@ public class MainGameManager : MonoBehaviour
 
     private void InitSweetsDic()
     {
+        saveClearRow = new Queue<int>();
+        saveClearColumn = new Queue<int>();
+
         SweetsPrefabDic = new Dictionary<SweetsType, SweetsPrefabStruct>();
         foreach (var item in sweetsPrefabList)
         {
@@ -121,7 +126,7 @@ public class MainGameManager : MonoBehaviour
         sweetsArray[6, 4] = CreateNewSweet(SweetsType.Barrier, 6, 4);
         Destroy(sweetsArray[8, 4].gameObject);
         sweetsArray[8, 4] = CreateNewSweet(SweetsType.Barrier, 8, 4);
-        StartCoroutine(AllFill());
+        AllFill();
     }
     #endregion
 
@@ -166,10 +171,15 @@ public class MainGameManager : MonoBehaviour
         return startPos + new Vector2(newX, -newY);
     }
 
+    public void AllFill()
+    {
+        StartCoroutine(_AllFill());
+    }
+
     /// <summary>
     /// 全部填充的方法
     /// </summary>
-    public IEnumerator AllFill()
+    public IEnumerator _AllFill()
     {
         bool isClear;
         do
@@ -184,8 +194,27 @@ public class MainGameManager : MonoBehaviour
             isClear = ClearAllMatchSweet();
 
         } while (isClear);
+        ClearSave();
     }
 
+    /// <summary>
+    /// 检查有是否为空的
+    /// </summary>
+    /// <returns></returns>
+    public bool CheckAll()
+    {
+        for(int x = 0; x<xColumn;x++)
+        {
+            for(int y =0;y<yColumn;y++)
+            {
+                if(sweetsArray[x,y].SweetType==SweetsType.Empty)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     /// <summary>
     /// 部分填充的办法
@@ -255,7 +284,6 @@ public class MainGameManager : MonoBehaviour
             }
         }
 
-
         for (int x = 0; x < xColumn; x++)
         {
             var sweet = sweetsArray[x, 0];//得到当前元素位置
@@ -268,6 +296,7 @@ public class MainGameManager : MonoBehaviour
             }
         }
 
+        //filledNotFinished = !filledNotFinished? CheckAll():true;
 
         return filledNotFinished;
     }
@@ -314,7 +343,7 @@ public class MainGameManager : MonoBehaviour
             info2.Move(tempX, tempY, fillTime);
             ClearSweets(list1);
             ClearSweets(list2);
-            StartCoroutine(AllFill());
+
             return true;
         }
         else
@@ -403,7 +432,7 @@ public class MainGameManager : MonoBehaviour
     #endregion
 
     #region Clear
-    public bool ClearSweets(List<SweetInfo> list)
+    public bool ClearSweets(List<SweetInfo> list,bool isSpecial=false)
     {
         if (list != null && list.Count > 0)
         {
@@ -416,14 +445,19 @@ public class MainGameManager : MonoBehaviour
                 }
             }
             GetScore(realNumber);
-            var endSweet = list[list.Count - 1];
-            CreateSpecialSweet(realNumber, endSweet.ColorComponent.SweetColorType, endSweet.X, endSweet.Y);
+            if(!isSpecial)
+            {
+                var endSweet = list[list.Count - 1];
+                CreateSpecialSweet(realNumber, endSweet.ColorComponent.SweetColorType, endSweet.X, endSweet.Y);
+            }
+            AllFill();
             return true;
         }
+        AllFill();
         return false;
     }
 
-    public bool ClearSweets(int x, int y)
+    public bool ClearSweet(int x, int y)
     {
         return ClearSweet(sweetsArray[x, y]);
     }
@@ -438,6 +472,58 @@ public class MainGameManager : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public void ClearSave()
+    {
+        while(saveClearRow.Count>0)
+        {
+            _ClearRow(saveClearRow.Dequeue());
+        }
+        while (saveClearColumn.Count > 0)
+        {
+            _ClearColumn(saveClearColumn.Dequeue());
+        }
+    }
+
+    public void ClearRow(int y)
+    {
+        saveClearRow.Enqueue(y);
+    }
+
+    public bool _ClearRow(int y)
+    {
+        if(y < 0|| y >= yColumn)
+        {
+            return false;
+        }
+        List<SweetInfo> list = new List<SweetInfo>();
+        for (int i =0;i< xColumn; i++)
+        {
+            list.Add(sweetsArray[i, y]);
+        }
+        ClearSweets(list, true);
+        return true;
+    }
+
+    public void ClearColumn(int x)
+    {
+        saveClearColumn.Enqueue(x);
+    }
+
+    public bool _ClearColumn(int x)
+    {
+        if (x < 0 || x >= xColumn)
+        {
+            return false;
+        }
+        List<SweetInfo> list = new List<SweetInfo>();
+        for (int i = 0; i < yColumn; i++)
+        {
+            list.Add(sweetsArray[x, i]);
+        }
+        ClearSweets(list, true);
+        return true;
     }
 
     public bool ClearBiscuit(int x, int y)
