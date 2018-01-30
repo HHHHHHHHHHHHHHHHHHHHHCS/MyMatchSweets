@@ -8,8 +8,7 @@ public enum SweetsColorType
     Blue,
     Green,
     Pink,
-    Any,
-    Count
+    Any,//彩虹
 }
 
 
@@ -39,9 +38,10 @@ public class SweetColor : MonoBehaviour
 
     public void SetColor()
     {
-        if(maxIndex<0)
+        if (maxIndex < 0)
         {
-            maxIndex = MainGameManager.Instance.SweetsColorDic.Count;
+            //减去纵横消除和彩虹和炸弹
+            maxIndex = MainGameManager.Instance.SweetsColorDic.Count - 1;
         }
         SetColor((SweetsColorType)Random.Range(0, maxIndex));
     }

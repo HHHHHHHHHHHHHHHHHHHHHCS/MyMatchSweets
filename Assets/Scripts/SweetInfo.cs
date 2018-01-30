@@ -15,7 +15,6 @@ public enum SweetsType
     Row_Clear,
     Column_Clear,
     Rainbowcandy,
-    count//标记类型
 }
 
 [System.Serializable]

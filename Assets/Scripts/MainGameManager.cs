@@ -20,12 +20,10 @@ public class MainGameManager : MonoBehaviour
 
     public MainUIManager MainUIManager { get; private set; }
     public MainAudioManager MainAudioManager { get; private set; }
-    public Dictionary<SweetsType, SweetsPrefabStruct> SweetsPrefabDic { get { return sweetsPrefabDic; } }
-    public Dictionary<SweetsColorType, SweetsColorStruct> SweetsColorDic { get { return sweetsColorDic; } }
+    public Dictionary<SweetsType, SweetsPrefabStruct> SweetsPrefabDic { get; private set; }
+    public Dictionary<SweetsColorType, SweetsColorStruct> SweetsColorDic { get; private set; }
 
     private Transform itemRoot;
-    private Dictionary<SweetsType, SweetsPrefabStruct> sweetsPrefabDic;
-    private Dictionary<SweetsColorType, SweetsColorStruct> sweetsColorDic;
     private SweetInfo[,] sweetsArray;
 
     private SweetInfo baseSweet;//按下的甜品
@@ -82,23 +80,23 @@ public class MainGameManager : MonoBehaviour
 
     private void InitSweetsDic()
     {
-        sweetsPrefabDic = new Dictionary<SweetsType, SweetsPrefabStruct>();
+        SweetsPrefabDic = new Dictionary<SweetsType, SweetsPrefabStruct>();
         foreach (var item in sweetsPrefabList)
         {
-            if (!sweetsPrefabDic.ContainsKey(item.sweetType))
+            if (!SweetsPrefabDic.ContainsKey(item.sweetType))
             {
-                sweetsPrefabDic.Add(item.sweetType, item);
+                SweetsPrefabDic.Add(item.sweetType, item);
             }
         }
         sweetsPrefabList.Clear();
         sweetsPrefabList = null;
 
-        sweetsColorDic = new Dictionary<SweetsColorType, SweetsColorStruct>();
+        SweetsColorDic = new Dictionary<SweetsColorType, SweetsColorStruct>();
         foreach (var item in sweetsColorList)
         {
-            if (!sweetsColorDic.ContainsKey(item.sweetColorType))
+            if (!SweetsColorDic.ContainsKey(item.sweetColorType))
             {
-                sweetsColorDic.Add(item.sweetColorType, item);
+                SweetsColorDic.Add(item.sweetColorType, item);
             }
         }
         sweetsColorList.Clear();
@@ -145,9 +143,22 @@ public class MainGameManager : MonoBehaviour
             default:
                 break;
         }
-        return Instantiate(sweetsPrefabDic[_sweetsType].prefab
+        return Instantiate(SweetsPrefabDic[_sweetsType].prefab
                     , spawnPos, Quaternion.identity, _itemRoot ? _itemRoot : itemRoot)
                     .Init(_sweetsType, itemRoot, _x, _y, fillTime);
+    }
+
+    public SweetInfo CreateSpecialSweet(int count, SweetsColorType color, int _x, int _y)
+    {
+        SweetInfo info = null;
+        if (count==4)
+        {
+            var type = UnityEngine.Random.Range(0, 1f)<0.5f? SweetsType.Row_Clear: SweetsType.Column_Clear;
+            info = sweetsArray[_x, _y] = CreateNewSweet(type, _x, _y);
+            info.SetColor(color);
+        }
+
+        return info;
     }
 
     public Vector2 CorrectPosition(int newX, int newY)
@@ -405,6 +416,8 @@ public class MainGameManager : MonoBehaviour
                 }
             }
             GetScore(realNumber);
+            var endSweet = list[list.Count - 1];
+            CreateSpecialSweet(realNumber, endSweet.ColorComponent.SweetColorType, endSweet.X, endSweet.Y);
             return true;
         }
         return false;
