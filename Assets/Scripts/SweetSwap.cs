@@ -29,7 +29,8 @@ public class SweetSwap : MonoBehaviour
     public bool ExchangeSweets(SweetInfo changeInfo)
     {
         if (SweetInfo.CanMove() && changeInfo.CanMove() && CheckSwap(changeInfo)
-            && changeInfo.ColorComponent.SweetColorType != SweetInfo.ColorComponent.SweetColorType)
+            && ((SweetInfo.SweetType==SweetsType.Rainbowcandy|| changeInfo.SweetType == SweetsType.Rainbowcandy)
+            ||changeInfo.ColorComponent.SweetColorType != SweetInfo.ColorComponent.SweetColorType))
         {
             MainGameManager.Instance.ExchangeSweets(SweetInfo, changeInfo);
             return true;

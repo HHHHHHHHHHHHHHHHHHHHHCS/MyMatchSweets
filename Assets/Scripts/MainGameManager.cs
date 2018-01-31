@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class MainGameManager : MonoBehaviour
 {
+    #region Values
     public static MainGameManager Instance { get; private set; }
 
     private readonly Vector2 startPos = new Vector2(-4.5f, 3.5f);
@@ -26,8 +27,7 @@ public class MainGameManager : MonoBehaviour
     private Transform itemRoot;
     private SweetInfo[,] sweetsArray;
 
-    private Queue<int> saveClearRow;
-    private Queue<int> saveClearColumn;
+    private Queue<KeyValuePair<bool, int>> saveClearLine;// bool == isrow
 
     private SweetInfo baseSweet;//按下的甜品
     private SweetInfo changeSweet;//要交换甜品
@@ -36,6 +36,8 @@ public class MainGameManager : MonoBehaviour
     private int score;
     private float addScore;
     private bool isGameOver;
+
+    #endregion
 
     private void Awake()
     {
@@ -82,8 +84,7 @@ public class MainGameManager : MonoBehaviour
 
     private void InitSweetsDic()
     {
-        saveClearRow = new Queue<int>();
-        saveClearColumn = new Queue<int>();
+        saveClearLine = new Queue<KeyValuePair<bool, int>>();
 
         SweetsPrefabDic = new Dictionary<SweetsType, SweetsPrefabStruct>();
         foreach (var item in sweetsPrefabList)
@@ -156,11 +157,17 @@ public class MainGameManager : MonoBehaviour
     public SweetInfo CreateSpecialSweet(int count, SweetsColorType color, int _x, int _y)
     {
         SweetInfo info = null;
-        if (count==4)
+        if (count == 4)
         {
-            var type = UnityEngine.Random.Range(0, 1f)<0.5f? SweetsType.Row_Clear: SweetsType.Column_Clear;
+            Destroy(sweetsArray[_x, _y].gameObject);
+            var type = UnityEngine.Random.Range(0, 1f) < 0.5f ? SweetsType.Row_Clear : SweetsType.Column_Clear;
             info = sweetsArray[_x, _y] = CreateNewSweet(type, _x, _y);
             info.SetColor(color);
+        }
+        else if (count >= 5)
+        {
+            Destroy(sweetsArray[_x, _y].gameObject);
+            sweetsArray[_x, _y] = CreateNewSweet(SweetsType.Rainbowcandy, _x, _y);
         }
 
         return info;
@@ -181,20 +188,24 @@ public class MainGameManager : MonoBehaviour
     /// </summary>
     public IEnumerator _AllFill()
     {
-        bool isClear;
+
         do
         {
-            yield return new WaitForSeconds(fillTime);
-
-
-            while (Fill())
+            bool isClear;
+            do
             {
                 yield return new WaitForSeconds(fillTime);
-            }
-            isClear = ClearAllMatchSweet();
 
-        } while (isClear);
-        ClearSave();
+
+                while (Fill())
+                {
+                    yield return new WaitForSeconds(fillTime);
+                }
+                isClear = ClearAllMatchSweet();
+
+            } while (isClear);
+        }
+        while (ClearSaveLine());
     }
 
     /// <summary>
@@ -203,11 +214,11 @@ public class MainGameManager : MonoBehaviour
     /// <returns></returns>
     public bool CheckAll()
     {
-        for(int x = 0; x<xColumn;x++)
+        for (int x = 0; x < xColumn; x++)
         {
-            for(int y =0;y<yColumn;y++)
+            for (int y = 0; y < yColumn; y++)
             {
-                if(sweetsArray[x,y].SweetType==SweetsType.Empty)
+                if (sweetsArray[x, y].SweetType == SweetsType.Empty)
                 {
                     return true;
                 }
@@ -306,7 +317,7 @@ public class MainGameManager : MonoBehaviour
     #region Swap
     public void SetBaseSweet(SweetInfo sweet)
     {
-        if (!isGameOver)
+        if (!isGameOver && sweet.CanClear())
         {
             baseSweet = sweet;
         }
@@ -314,7 +325,7 @@ public class MainGameManager : MonoBehaviour
 
     public void SetChangeSweet(SweetInfo sweet)
     {
-        if (!isGameOver)
+        if (!isGameOver && sweet.CanClear())
         {
             changeSweet = sweet;
         }
@@ -334,24 +345,52 @@ public class MainGameManager : MonoBehaviour
     {
         sweetsArray[info1.X, info1.Y] = info2;
         sweetsArray[info2.X, info2.Y] = info1;
-        var list1 = MatchSweets(info1, info2.X, info2.Y);
-        var list2 = MatchSweets(info2, info1.X, info1.Y);
-        if (list1 != null || list2 != null)
+        if (info1.SweetType != SweetsType.Rainbowcandy
+            && info2.SweetType != SweetsType.Rainbowcandy)
         {
-            int tempX = info1.X, tempY = info1.Y;
-            info1.Move(info2.X, info2.Y, fillTime);
-            info2.Move(tempX, tempY, fillTime);
-            ClearSweets(list1);
-            ClearSweets(list2);
+            var list1 = MatchSweets(info1, info2.X, info2.Y);
+            var list2 = MatchSweets(info2, info1.X, info1.Y);
+            if (list1 != null || list2 != null)
+            {
+                int tempX = info1.X, tempY = info1.Y;
+                info1.Move(info2.X, info2.Y, fillTime);
+                info2.Move(tempX, tempY, fillTime);
+                ClearSweets(list1);
+                ClearSweets(list2);
 
-            return true;
+                return true;
+            }
+            else
+            {
+                sweetsArray[info1.X, info1.Y] = info1;
+                sweetsArray[info2.X, info2.Y] = info2;
+                return false;
+            }
         }
-        else
+        else if (info1 != info2)
         {
-            sweetsArray[info1.X, info1.Y] = info1;
-            sweetsArray[info2.X, info2.Y] = info2;
-            return false;
+            if (info1.SweetType == SweetsType.Rainbowcandy
+            && info2.SweetType == SweetsType.Rainbowcandy)
+            {
+                ClearColor(SweetsColorType.Any, info1, info2);
+                return true;
+            }
+            else if (info1.SweetType == SweetsType.Rainbowcandy
+                && info2.SweetType != SweetsType.Empty)
+            {
+
+                ClearColor(info2.ColorComponent.SweetColorType, info1);
+                return true;
+            }
+            else if (info2.SweetType == SweetsType.Rainbowcandy
+                && info1.SweetType != SweetsType.Empty)
+            {
+
+                ClearColor(info1.ColorComponent.SweetColorType, info2);
+                return true;
+            }
         }
+        return false;
     }
 
     public List<SweetInfo> MatchSweets(SweetInfo sweet, int newX, int newY)
@@ -432,7 +471,7 @@ public class MainGameManager : MonoBehaviour
     #endregion
 
     #region Clear
-    public bool ClearSweets(List<SweetInfo> list,bool isSpecial=false)
+    public bool ClearSweets(List<SweetInfo> list, bool isSpecial = false)
     {
         if (list != null && list.Count > 0)
         {
@@ -445,7 +484,7 @@ public class MainGameManager : MonoBehaviour
                 }
             }
             GetScore(realNumber);
-            if(!isSpecial)
+            if (!isSpecial)
             {
                 var endSweet = list[list.Count - 1];
                 CreateSpecialSweet(realNumber, endSweet.ColorComponent.SweetColorType, endSweet.X, endSweet.Y);
@@ -474,33 +513,42 @@ public class MainGameManager : MonoBehaviour
         return false;
     }
 
-    public void ClearSave()
+    public bool ClearSaveLine()
     {
-        while(saveClearRow.Count>0)
+        if (saveClearLine.Count > 0)
         {
-            _ClearRow(saveClearRow.Dequeue());
+            var v = saveClearLine.Dequeue();
+            if (v.Key)
+            {
+                _ClearRow(v.Value);
+            }
+            else
+            {
+                _ClearColumn(v.Value);
+            }
+            return true;
         }
-        while (saveClearColumn.Count > 0)
-        {
-            _ClearColumn(saveClearColumn.Dequeue());
-        }
+        return false;
     }
 
     public void ClearRow(int y)
     {
-        saveClearRow.Enqueue(y);
+        saveClearLine.Enqueue(new KeyValuePair<bool, int>(true, y));
     }
 
     public bool _ClearRow(int y)
     {
-        if(y < 0|| y >= yColumn)
+        if (y < 0 || y >= yColumn)
         {
             return false;
         }
         List<SweetInfo> list = new List<SweetInfo>();
-        for (int i =0;i< xColumn; i++)
+        for (int i = 0; i < xColumn; i++)
         {
-            list.Add(sweetsArray[i, y]);
+            if (sweetsArray[i, y].SweetType != SweetsType.Rainbowcandy)
+            {
+                list.Add(sweetsArray[i, y]);
+            }
         }
         ClearSweets(list, true);
         return true;
@@ -508,7 +556,7 @@ public class MainGameManager : MonoBehaviour
 
     public void ClearColumn(int x)
     {
-        saveClearColumn.Enqueue(x);
+        saveClearLine.Enqueue(new KeyValuePair<bool, int>(false, x));
     }
 
     public bool _ClearColumn(int x)
@@ -520,10 +568,42 @@ public class MainGameManager : MonoBehaviour
         List<SweetInfo> list = new List<SweetInfo>();
         for (int i = 0; i < yColumn; i++)
         {
-            list.Add(sweetsArray[x, i]);
+            if (sweetsArray[x, i].SweetType != SweetsType.Rainbowcandy)
+            {
+                list.Add(sweetsArray[x, i]);
+            }
+
         }
         ClearSweets(list, true);
         return true;
+    }
+
+    public void ClearColor(SweetsColorType type, SweetInfo boom1 = null, SweetInfo boom2 = null)
+    {
+        List<SweetInfo> list = new List<SweetInfo>();
+        SweetInfo item;
+        for (int x = 0; x < xColumn; x++)
+        {
+            for (int y = 0; y < yColumn; y++)
+            {
+                item = sweetsArray[x, y];
+                if (item.CanChangeColor()
+                    && (item.ColorComponent.SweetColorType == type
+                    || type == SweetsColorType.Any))
+                {
+                    list.Add(item);
+                }
+            }
+        }
+        if (boom1 != null)
+        {
+            list.Add(boom1);
+        }
+        if (boom2 != null)
+        {
+            list.Add(boom2);
+        }
+        ClearSweets(list, true);
     }
 
     public bool ClearBiscuit(int x, int y)
@@ -596,7 +676,7 @@ public class MainGameManager : MonoBehaviour
 
     public void UpdateScore()
     {
-        var _score = Mathf.Clamp((score - addScore) * Time.deltaTime, 0.15f, 10);
+        var _score = Mathf.Clamp((score - addScore) * Time.deltaTime, 0.15f, (score - addScore) / 10);
         addScore = Mathf.Clamp((addScore + _score), 0, score);
         if (MainUIManager)
         {
@@ -633,6 +713,5 @@ public class MainGameManager : MonoBehaviour
         }
     }
     #endregion
-
 
 }

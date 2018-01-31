@@ -16,6 +16,11 @@ public class SweetClear : MonoBehaviour
     {
         IsClear = true;
         Animator anim = GetComponent<Animator>();
+        BoxCollider2D box2D = GetComponent<BoxCollider2D>();
+        if(box2D)
+        {
+            box2D.enabled = false;
+        }
         if (anim)
         {
             anim.Play(str);

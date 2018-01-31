@@ -83,15 +83,14 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4988456045260112}
+  - component: {fileID: 95839951312772450}
   - component: {fileID: 61568352813426648}
   - component: {fileID: 114415356351101640}
   - component: {fileID: 114113437062293836}
-  - component: {fileID: 114812914478013202}
   - component: {fileID: 114638055464416126}
-  - component: {fileID: 114586466100567206}
-  - component: {fileID: 95839951312772450}
+  - component: {fileID: 114696798538928256}
   m_Layer: 0
-  m_Name: RainBoomSweetPrefab
+  m_Name: RainbowSweetPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -230,17 +229,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c21437ff792bf91448059043d08d7af9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114586466100567206
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1589475458263660}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73f63b64545614c4baaff4eacd2fe7e5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114638055464416126
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -252,7 +240,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa075aa840336254c8cd5ca1ea6707ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114812914478013202
+--- !u!114 &114696798538928256
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -260,7 +248,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1589475458263660}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d1beb292a49d88458551d1a314aebac, type: 3}
+  m_Script: {fileID: 11500000, guid: e0532ef23c8fa9743b9583f27f72e1cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!212 &212022110334356090

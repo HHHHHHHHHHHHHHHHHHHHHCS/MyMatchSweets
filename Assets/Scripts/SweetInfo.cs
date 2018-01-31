@@ -66,7 +66,7 @@ public class SweetInfo : MonoBehaviour
             SwapComponent.Init(this);
         }
 
-        if(CanMove())
+        if (CanMove())
         {
             Move(_x, _y, _time);
         }
@@ -99,9 +99,9 @@ public class SweetInfo : MonoBehaviour
         return SwapComponent;
     }
 
-    public bool CanClear ()
+    public bool CanClear()
     {
-        return ClearComponent;
+        return ClearComponent != null && !ClearComponent.IsClear;
     }
 
     public void Move(int _x, int _y, float _time)
@@ -140,7 +140,7 @@ public class SweetInfo : MonoBehaviour
 
     public bool ExchangeSweets(SweetInfo info)
     {
-        if(CanSwap())
+        if (CanSwap())
         {
             return SwapComponent.ExchangeSweets(info);
         }

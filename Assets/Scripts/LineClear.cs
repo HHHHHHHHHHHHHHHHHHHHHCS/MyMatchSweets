@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LineClear : SweetClear
 {
-[SerializeField]
+    [SerializeField]
     private bool isRow;
 
     private SweetInfo info;
