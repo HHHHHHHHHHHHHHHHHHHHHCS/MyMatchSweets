@@ -39,6 +39,7 @@ public class MainGameManager : MonoBehaviour
 
     #endregion
 
+    #region Unity Method
     private void Awake()
     {
         Init();
@@ -49,6 +50,8 @@ public class MainGameManager : MonoBehaviour
         RunTime();
         UpdateScore();
     }
+
+    #endregion
 
     #region Init
     private void Init()
@@ -119,14 +122,20 @@ public class MainGameManager : MonoBehaviour
                 sweetsArray[i, j] = CreateNewSweet(SweetsType.Empty, i, j);
             }
         }
-        Destroy(sweetsArray[0, 4].gameObject);
-        sweetsArray[0, 4] = CreateNewSweet(SweetsType.Barrier, 0, 4);
-        Destroy(sweetsArray[3, 4].gameObject);
-        sweetsArray[3, 4] = CreateNewSweet(SweetsType.Barrier, 3, 4);
-        Destroy(sweetsArray[6, 4].gameObject);
-        sweetsArray[6, 4] = CreateNewSweet(SweetsType.Barrier, 6, 4);
-        Destroy(sweetsArray[8, 4].gameObject);
-        sweetsArray[8, 4] = CreateNewSweet(SweetsType.Barrier, 8, 4);
+        //Destroy(sweetsArray[0, 4].gameObject);
+        //sweetsArray[0, 4] = CreateNewSweet(SweetsType.Barrier, 0, 4);
+        //Destroy(sweetsArray[3, 4].gameObject);
+        //sweetsArray[3, 4] = CreateNewSweet(SweetsType.Barrier, 3, 4);
+        //Destroy(sweetsArray[6, 4].gameObject);
+        //sweetsArray[6, 4] = CreateNewSweet(SweetsType.Barrier, 6, 4);
+        //Destroy(sweetsArray[8, 4].gameObject);
+        //sweetsArray[8, 4] = CreateNewSweet(SweetsType.Barrier, 8, 4);
+        var y = yColumn / 2;
+        for (int i = 1;i<xColumn-1;i++)
+        {
+            Destroy(sweetsArray[i, y].gameObject);
+            sweetsArray[i, y] = CreateNewSweet(SweetsType.Barrier, i, y);
+        }
         AllFill();
     }
     #endregion
