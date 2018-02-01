@@ -8,7 +8,7 @@ public class MainGameManager : MonoBehaviour
     #region Values
     public static MainGameManager Instance { get; private set; }
 
-    private readonly Vector2 startPos = new Vector2(-4.5f, 3.5f);
+    private readonly Vector2 startPos = new Vector2(-4.5f, 3.3f);
     private const int xColumn = 9, yColumn = 8;
     public const float fillTime = 0.25f;
 
